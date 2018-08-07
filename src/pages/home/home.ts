@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ToastController } from 'ionic-angular';
+import { ActionSheetController } from 'ionic-angular'
 
 @Component({
   selector: 'page-home',
@@ -13,7 +14,9 @@ export class HomePage {
 
   constructor(public navCtrl: NavController,
   	private camera: Camera,
-  	private toastCtrl: ToastController) {
+  	private toastCtrl: ToastController,
+  	private actionSheetCtrl: ActionSheetController) {
+
 
   }
 
@@ -57,8 +60,43 @@ export class HomePage {
     this.camera.getPicture(options).then((imageData) => {
       this.base64Image = "data:image/jpeg;base64," + imageData;
     }, (err) => {
-      // Handle error
+      console.log(err);
+        let toast = this.toastCtrl.create({
+		    message: err,
+		    duration: 3000,
+		    position: 'top'
+		  });
+        toast.present();
     });
   }
+
+  alertSheetPictureOptions(){
+    let actionSheet = this.actionSheetCtrl.create({
+        title: 'Add picture with',
+        buttons: [
+        {
+          text: 'Camera Roll',
+          icon: 'camera',
+          handler: () => {
+            this.takePicture();
+          }
+        },{
+          text: 'Gallery',
+          icon: 'images',
+          handler: () => {
+            this.openGallery();
+          }
+        },{
+          text: 'Cancel',
+          role: 'cancel',
+          icon: 'undo',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+        ]
+     });
+     actionSheet.present();
+ 	}
 
 }
